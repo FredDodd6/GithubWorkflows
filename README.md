@@ -1,2 +1,3 @@
 # GithubWorkflows
-Testing Github Workflows on simple perl scripts
+testing workflows wirht github actions and cirrus-ci
+
