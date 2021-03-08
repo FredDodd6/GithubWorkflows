@@ -1,0 +1,39 @@
+name: on-pr
+
+on: [push, pull_request] # just on push?
+
+jobs:
+  build: # might not need to check sudo
+    env:
+      WTSI_NPG_GITHUB_URL: https://github.com/wtsi-npg
+      WTSI_NPG_CONDA_REPO: https://dnap.cog.sanger.ac.uk/npg/conda/prod/generic
+
+    strategy:
+      matrix:
+        os: ['ubuntu-18.04']
+        perl: ['5.26.2'] # TODO this version of perl threading support (5.26-shrplib - in travis)
+    runs-on: ${{matrix.os}} # potential for 20.04 (?) # this is dist: bionic
+
+    name: Perl ${{ matrix.perl }} on ${{ matrix.os }}  # can simplify this if no other versions/os' are needed
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Set up perl
+      uses: shogo82148/actions-setup-perl@v1 #TODO find method that doesnt require this repo? 
+      with:
+          perl-version: ${{ matrix.perl }}
+    - run: |
+          perl -V
+          cpanm --installdeps .
+
+    - name: install libgd-dev
+      run:
+          sudo apt-get install -y libgd-dev # TODO change to cache method? -  5GB limit on caches
+          
+    - name: run Build.PL and ./Build   
+      run: |
+          export TEST_AUTHOR=1
+          perl Build.PL && ./Build test --verbose # might have to add path
+      
+
