@@ -1,3 +1,3 @@
 # GithubWorkflows
-testing workflows wirht github actions and cirrus-ci
+testing workflows with github actions 
 
